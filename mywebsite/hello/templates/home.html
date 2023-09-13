@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{% load custom_filters %}
+<html>
+<head>
+    <title>MusicTrendz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 90%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        caption {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .listen-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #337ab7;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>MusicTrendz</h1>
+    <p>A comparison of Global music trends vs Swedish music trends</p>
+    <table>
+        <tr>
+            <td>Home</td>
+            <td><a href="{% url 'analysis' %}">Trend Analysis</a> </td>
+        </tr>
+    </table>
+    <table>
+        <caption>Top 50 Songs</caption>
+        <tr>
+            <td>&nbsp;</td>
+            <td valign="top">
+                <table>
+                    <caption>
+                        <a href="https://open.spotify.com/playlist/{{playlist_id_global}}">Global</a>
+                    </caption>
+                    <tr>
+                        <th>Rank</th>
+                        <th colspan="2">Song</th>
+                        <th>Artist(s)</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    {% for track in playlist_tracks_global %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a href="{% url 'album' album_id=track.AlbumID %}"><img src="{{track.Image}}"></a></td>
+                        <td><a href="{% url 'track' track_id=track.ID %}">{{track.Name}}</a></td>
+                        <td>
+                            {% if track.Artists|isinstance:"tuple" %}
+                                <a href="{% url 'artist' artist_id=track.Artists.0 %}">{{track.Artists.1}}</a>
+                            {% else %}
+                                {% for artist2 in track.Artists %}
+                                    <a href="{% url 'artist' artist_id=artist2.0 %}">{{artist2.1}}</a>
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                        <td>{{track.Duration}}</td>
+                        <td><a href="https://open.spotify.com/track/{{track.ID}}" class="listen-link">Listen</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td>&nbsp;</td>
+            <td valign="top">
+                <table>
+                    <caption>
+                        <a href="https://open.spotify.com/playlist/{{playlist_id_sweden}}">Sweden</a>
+                    </caption>
+                    <tr>
+                        <th>Rank</th>
+                        <th colspan="2">Song</th>
+                        <th>Artist(s)</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    {% for track in playlist_tracks_sweden %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="{% url 'album' album_id=track.AlbumID %}"><img src="{{track.Image}}"></a></td>
+                            <td><a href="{% url 'track' track_id=track.ID %}">{{track.Name}}</a></td>
+                            <td>
+                                {% if track.Artists|isinstance:"tuple" %}
+                                <a href="{% url 'artist' artist_id=track.Artists.0 %}">{{track.Artists.1}}</a>
+                                {% else %}
+                                    {% for artist in track.Artists %}
+                                        <a href="{% url 'artist' artist_id=artist.0 %}">{{artist.1}}</a>
+                                        {% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td>{{track.Duration}}</td>
+                            <td><a href="https://open.spotify.com/track/{{track.ID}}" class="listen-link">Listen</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</body>
+</html>

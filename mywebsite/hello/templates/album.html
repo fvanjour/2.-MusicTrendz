@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+{% load custom_filters %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MusicTrendz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        caption {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        .listen-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #337ab7;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<h1>MusicTrendz</h1>
+<p>A comparison of Global music trends vs Swedish music trends</p>
+<table>
+    <tr>
+        <td><a href="{% url 'home' %}">Home</a></td>
+        <td><a href="{% url 'analysis' %}">Trend Analysis</a></td>
+    </tr>
+</table>
+<table>
+    <caption>Album: {{album_details.Name}} </caption>
+        <tr>
+            <td>&nbsp;</td>
+            <td valign="top">
+                <table>
+                    <tr>
+                        <td rowspan="7"><img src="{{album_details.Images.1.url}}"></td>
+                        <td>Type</td>
+                        <td>{{album_details.Type}}</td>
+                    </tr>
+                    <tr>
+                        <td>Label</td>
+                        <td>{{album_details.Label}}</td>
+                    </tr>
+                    <tr>
+                        <td>Release Date</td>
+                        <td>
+                            {{album_details.ReleaseDate}}
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>Total Songs</td>
+                        <td>
+                            {{album_details.TotalTracks}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Popularity</td>
+                        <td>
+                            {{album_details.Popularity}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Artist(s)</td>
+                        <td>
+                             {% if album_details.Artists|isinstance:"tuple" %}
+                                <a href="{% url 'artist' artist_id=album_details.Artists.0 %}">{{album_details.Artists.1}}</a>
+                            {% else %}
+                                {% for artist2 in album_details.Artists %}
+                                    <a href="{% url 'artist' artist_id=artist2.0 %}">{{artist2.1}}</a>
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Click <a href="https://open.spotify.com/album/{{album_details.ID}}">here</a> to view on Spotify</td>
+                    </tr>
+                </table>
+            </td>
+            <td>&emsp;</td>
+            <td valign="top">
+                 <table>
+                    <caption>
+                        Songs
+                    </caption>
+                    <tr>
+                        <th>#</th>
+                        <th>Song</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    {% for album_track in album_details.Tracks %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>
+                            <a href="{% url 'track' track_id=album_track.0 %}">
+                                {{album_track.1}}
+                            </a>
+                        </td>
+                       <td>{{album_track.2}}</td>
+                        <td><a href="https://open.spotify.com/track/{{album_track.0}}" class="listen-link">Listen</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</body>
+</html>

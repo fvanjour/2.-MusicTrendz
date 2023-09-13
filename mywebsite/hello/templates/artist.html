@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MusicTrendz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 90%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        caption {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        .listen-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #337ab7;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<h1>MusicTrendz</h1>
+<p>A comparison of Global music trends vs Swedish music trends</p>
+<table>
+    <tr>
+        <td><a href="{% url 'home' %}">Home</a></td>
+        <td><a href="{% url 'analysis' %}">Trend Analysis</a></td>
+    </tr>
+</table>
+<table>
+    <caption>Artist: {{artist_details.Name}}</caption>
+        <tr>
+            <td>&nbsp;</td>
+            <td valign="top">
+                <table>
+                    <tr>
+                        <td rowspan="5"><img src="{{artist_details.Images.1.url}}"></td>
+                        <td>Popularity</td>
+                        <td>{{artist_details.Popularity}}</td>
+                    </tr>
+                    <tr>
+                        <td>Followers</td>
+                        <td>{{artist_details.Followers}}</td>
+                    </tr>
+                    <tr>
+                        <td>Genres</td>
+                        <td>
+                            {% for genre in artist_details.Genres %}
+                                        {{genre}}
+                                        {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Click <a href="https://open.spotify.com/artist/{{artist_details.ID}}">here</a> to view on Spotify</td>
+                    </tr>
+                </table>
+            </td>
+            <td>&emsp;</td>
+            <td valign="top">
+                 <table>
+                    <caption>
+                        Top Songs
+                    </caption>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Song</th>
+                        <th>Album</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    {% for top_track in artist_top_tracks %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>
+                            <a href="{% url 'track' track_id=top_track.ID %}">
+                                {{top_track.Name}}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'album' album_id=top_track.AlbumID %}">
+                            {{top_track.AlbumName}}
+                        </td>
+                        <td>{{top_track.Duration}}</td>
+                        <td><a href="https://open.spotify.com/track/{{top_track.ID}}" class="listen-link">Listen</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</body>
+</html>
